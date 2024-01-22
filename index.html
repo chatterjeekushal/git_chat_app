@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat app</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            motion: 100vh;
+            background: #f8f8f8;
+
+        }
+
+        .chatsection {
+            width: 800px;
+            max-width: 90%;
+            background: #fff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0);
+
+
+        }
+
+        .brand {
+
+            padding: 2px;
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand h1 {
+            text-transform: uppercase;
+            font-size: 20px;
+            color: #444;
+            margin-left: 10px;
+
+        }
+
+        .massagearea {
+            height: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-top: 40px;
+        }
+
+        #textarea {
+            width: 100%;
+            border: none;
+            padding-top: 20px;
+            font-size: 16px;
+            outline: none;
+            background: #f8f8f8;
+        }
+
+        .massage {
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            max-width: 300px;
+            position: relative;
+        }
+
+        .incoming {
+
+
+            background: #8f8be8;
+            color: #fff;
+
+        }
+
+        .outgoing {
+            background: #e9eafd;
+            color: #787986;
+            margin-left: auto;
+        }
+
+
+        .massage h4 {
+
+            position: absolute;
+            top: -20px;
+            left: 0;
+            color: #333;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <section class="chatsection">
+
+
+        <div class="brand">
+            <img src="twitter.png" alt="">
+            <h1>wassup</h1>
+        </div>
+
+        <div class="massagearea">
+
+            
+
+                
+
+
+            </div>
+
+
+            <textarea id="textarea" cols="30" rows="1" placeholder="write qamassage">
+
+            </textarea>
+
+
+
+        </div>
+
+
+
+    </section>
+
+    <script src="/socket.io/socket.io.js"></script> <!-- add sockert.io-->
+
+
+    <script>
+
+// use io function
+const socket = io()
+let name;
+let textarea = document.querySelector('#textarea')
+let massagearea=document.querySelector(".massagearea");
+
+do {
+
+name = prompt('plese enter your name')
+} while (!name);
+
+
+textarea.addEventListener('keyup',(e)=>{
+
+if(e.key==='Enter'){
+sendmassage(e.target.value);
+}
+
+        })
+
+        function sendmassage(massage){
+
+let msg={
+    user:name,
+    message:massage.trim()
+}
+
+// append
+
+appendmassage(msg,'outgoing');
+
+textarea.value=" "
+
+
+// send to server
+
+socket.emit('massage',msg)
+
+        }
+
+function appendmassage(msg,type){
+
+let maindev=document.createElement('div')
+
+let classname=type
+
+maindev.classList.add(classname,'massage')
+
+
+let markup =`
+
+<h4>${msg.user}</h4>
+<p>${msg.message}</p>
+
+`
+
+
+maindev.innerHTML=markup
+
+massagearea.appendChild(maindev)
+
+}    
+
+// reseve massage
+
+socket.on('massage',(msg)=>{
+
+    appendmassage(msg,'incoming');
+
+})
+
+    </script>
+
+
+</body>
+
+</html>
